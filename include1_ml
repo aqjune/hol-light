@@ -1,0 +1,106 @@
+#load "hol_base.cmo" ;;
+Fmt.(pf stdout "Loaded hol_base.cmo\n%!") ;;
+#load "lib.cmo" ;;
+Fmt.(pf stdout "Loaded lib.cmo\n%!") ;;
+#load "fusion.cmo" ;;
+Fmt.(pf stdout "Loaded fusion.cmo\n%!") ;;
+#load "basics.cmo" ;;
+Fmt.(pf stdout "Loaded basics.cmo\n%!") ;;
+#load "nets.cmo" ;;
+Fmt.(pf stdout "Loaded nets.cmo\n%!") ;;
+#load "printer.cmo" ;;
+Fmt.(pf stdout "Loaded printer.cmo\n%!") ;;
+#load "preterm.cmo" ;;
+Fmt.(pf stdout "Loaded preterm.cmo\n%!") ;;
+#load "holparser.cmo" ;;
+Fmt.(pf stdout "Loaded holparser.cmo\n%!") ;;
+#load "equal.cmo" ;;
+Fmt.(pf stdout "Loaded equal.cmo\n%!") ;;
+#load "bool.cmo" ;;
+Fmt.(pf stdout "Loaded bool.cmo\n%!") ;;
+#load "drule.cmo" ;;
+Fmt.(pf stdout "Loaded drule.cmo\n%!") ;;
+#load "tactics.cmo" ;;
+Fmt.(pf stdout "Loaded tactics.cmo\n%!") ;;
+#load "itab.cmo" ;;
+Fmt.(pf stdout "Loaded itab.cmo\n%!") ;;
+#load "simp.cmo" ;;
+Fmt.(pf stdout "Loaded simp.cmo\n%!") ;;
+
+(*
+#load "theorems.cmo" ;;
+Fmt.(pf stdout "Loaded theorems.cmo\n%!") ;;
+#load "ind_defs.cmo" ;;
+Fmt.(pf stdout "Loaded ind_defs.cmo\n%!") ;;
+#load "class.cmo" ;;
+Fmt.(pf stdout "Loaded class.cmo\n%!") ;;
+#load "trivia.cmo" ;;
+Fmt.(pf stdout "Loaded trivia.cmo\n%!") ;;
+#load "canon.cmo" ;;
+Fmt.(pf stdout "Loaded canon.cmo\n%!") ;;
+#load "meson.cmo" ;;
+Fmt.(pf stdout "Loaded meson.cmo\n%!") ;;
+#load "firstorder.cmo" ;;
+Fmt.(pf stdout "Loaded firstorder.cmo\n%!") ;;
+#load "metis.cmo" ;;
+Fmt.(pf stdout "Loaded metis.cmo\n%!") ;;
+#load "thecops.cmo" ;;
+Fmt.(pf stdout "Loaded thecops.cmo\n%!") ;;
+*)
+(*
+#load "quot.cmo" ;;
+Fmt.(pf stdout "Loaded quot.cmo\n%!") ;;
+#load "impconv.cmo" ;;
+Fmt.(pf stdout "Loaded impconv.cmo\n%!") ;;
+#load "pair.cmo" ;;
+Fmt.(pf stdout "Loaded pair.cmo\n%!") ;;
+#load "compute.cmo" ;;
+Fmt.(pf stdout "Loaded compute.cmo\n%!") ;;
+#load "nums.cmo" ;;
+Fmt.(pf stdout "Loaded nums.cmo\n%!") ;;
+#load "recursion.cmo" ;;
+Fmt.(pf stdout "Loaded recursion.cmo\n%!") ;;
+#load "arith.cmo" ;;
+Fmt.(pf stdout "Loaded arith.cmo\n%!") ;;
+#load "wf.cmo" ;;
+Fmt.(pf stdout "Loaded wf.cmo\n%!") ;;
+#load "calc_num.cmo" ;;
+Fmt.(pf stdout "Loaded calc_num.cmo\n%!") ;;
+#load "normalizer.cmo" ;;
+Fmt.(pf stdout "Loaded normalizer.cmo\n%!") ;;
+#load "grobner.cmo" ;;
+Fmt.(pf stdout "Loaded grobner.cmo\n%!") ;;
+#load "ind_types.cmo" ;;
+Fmt.(pf stdout "Loaded ind_types.cmo\n%!") ;;
+#load "lists.cmo" ;;
+Fmt.(pf stdout "Loaded lists.cmo\n%!") ;;
+#load "realax.cmo" ;;
+Fmt.(pf stdout "Loaded realax.cmo\n%!") ;;
+#load "calc_int.cmo" ;;
+Fmt.(pf stdout "Loaded calc_int.cmo\n%!") ;;
+#load "realarith.cmo" ;;
+Fmt.(pf stdout "Loaded realarith.cmo\n%!") ;;
+#load "real.cmo" ;;
+Fmt.(pf stdout "Loaded real.cmo\n%!") ;;
+#load "calc_rat.cmo" ;;
+Fmt.(pf stdout "Loaded calc_rat.cmo\n%!") ;;
+#load "int.cmo" ;;
+Fmt.(pf stdout "Loaded int.cmo\n%!") ;;
+#load "sets.cmo" ;;
+Fmt.(pf stdout "Loaded sets.cmo\n%!") ;;
+#load "iterate.cmo" ;;
+Fmt.(pf stdout "Loaded iterate.cmo\n%!") ;;
+#load "cart.cmo" ;;
+Fmt.(pf stdout "Loaded cart.cmo\n%!") ;;
+#load "define.cmo" ;;
+Fmt.(pf stdout "Loaded define.cmo\n%!") ;;
+*)
+
+
+
+(*
+;;; Local Variables: ***
+;;; mode:tuareg ***
+;;; End: ***
+
+*)

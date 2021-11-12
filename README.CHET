@@ -21,10 +21,10 @@ you can get HOL-OCaml syntax by the simple directive
 
 ================================================================
 
-opam switch 4.11.1
+opam switch 4.12.0
 eval 'opam config -env'
 opam install -y not-ocamlfind ocamlfind fmt rresult pcre bos num ounit2
-opam pin -y camlp5 https://github.com/camlp5/camlp5.git
+opam install -y camlp5
 opam pin -y pa_hol_syntax https://github.com/chetmurthy/pa_hol_syntax.git
 
 $ ocaml
