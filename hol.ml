@@ -86,6 +86,7 @@ let needs s =
 (* Various tweaks to OCaml and general library functions.                    *)
 (* ------------------------------------------------------------------------- *)
 
+loads "include0_ml";;   (* Import required packages                          *)
 loads "system.ml";;     (* Set up proper parsing and load bignums            *)
 loads "lib.ml";;        (* Various useful general library functions          *)
 
