@@ -17,9 +17,11 @@ open Types
 (* If the given type is simple return its name, otherwise None. *)
 
 let rec get_simple_type = function
-  | Tlink { desc = Tconstr (Pident p,[],_) } -> Some (Ident.name p)
+  | Tlink texpr ->
+    (match get_desc texpr with
+    | Tconstr (Pident p,[],_) -> Some (Ident.name p)
+    | d -> get_simple_type d)
   | Tconstr (Path.Pident p,  [], _) -> Some (Ident.name p)
-  | Tlink { desc = d } -> get_simple_type d
   | _ -> None;;
 
 (* Execute any OCaml expression given as a string. *)
@@ -45,7 +47,7 @@ let lid_cons lidopt id =
   | Some li -> Longident.Ldot(li, id)
 
 let it_val_1 lidopt s p vd acc =
-  if (Some "thm") = Ocaml_typing.get_simple_type vd.Types.val_type.desc then
+  if (Some "thm") = Ocaml_typing.get_simple_type (get_desc vd.Types.val_type) then
     (lid_cons lidopt s)::acc else acc
 
 let it_mod_1 lidopt s p md acc = (lid_cons lidopt s)::acc
