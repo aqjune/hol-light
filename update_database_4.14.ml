@@ -53,9 +53,16 @@ let it_val_1 lidopt s p vd acc =
 let it_mod_1 lidopt s p md acc = (lid_cons lidopt s)::acc
 
 let enum0 lidopt =
-  let vl = Env.fold_values (it_val_1 lidopt) lidopt !Toploop.toplevel_env [] in
-  let ml = Env.fold_modules (it_mod_1 lidopt) lidopt !Toploop.toplevel_env [] in
-  (vl, ml)
+  try
+    let vl = Env.fold_values (it_val_1 lidopt) lidopt !Toploop.toplevel_env [] in
+    let ml = Env.fold_modules (it_mod_1 lidopt) lidopt !Toploop.toplevel_env [] in
+    (vl, ml)
+  with Not_found ->
+    (* Looking for (Longident.Lident "Stream") raises Not_found.
+       Stream is a deprecated alias module of "Stdlib.Stream", and the camlp-streams
+       package that is used by pa_hol_syntax redefines Stream, which seems to
+       confuse Env.fold_values and Env.fold_modules. *)
+    ([], [])
 
 let rec enum1 lidopt acc =
   match enum0 lidopt with
