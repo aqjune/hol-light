@@ -857,7 +857,7 @@ let (TAC_PROOF : goal * tactic -> thm) =
     else failwith "TAC_PROOF: Unsolved goals";;
 
 let prove(t,tac) =
-  let th = TAC_PROOF(([],t),tac) in
+  let th = TAC_PROOF(([],t),if !use_cheat then CHEAT_TAC else tac) in
   let asl,t' = dest_thm th in
   if asl <> [] then failwith "prove: additional assumptions in result"
   else if t' = t then th else

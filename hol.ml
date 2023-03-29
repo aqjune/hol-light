@@ -24,6 +24,11 @@ let hol_dir = ref
 
 let temp_path = ref "/tmp";;
 
+(* aqjune: cheat all prove()s using CHEAT_TAC. This is useful when you want  *)
+(* to avoid checking proofs that are already proven to be correct again.     *)
+(* NOTE: this flag must not be delivered to the main HOL Light repo.         *)
+let use_cheat = ref true;;
+
 (* ------------------------------------------------------------------------- *)
 (* Load files from system and/or user-settable directories.                  *)
 (* Paths map initial "$/" to !hol_dir dynamically; use $$ to get the actual  *)
@@ -169,3 +174,5 @@ loads "define.ml";;     (* Support for general recursive definitions         *)
 
 loads "help.ml";;       (* Online help using the entries in Help directory   *)
 loads "database.ml";;   (* List of name-theorem pairs for search system      *)
+
+use_cheat := false;;
