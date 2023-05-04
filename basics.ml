@@ -151,7 +151,7 @@ let rec type_match vty cty sofar =
   else
      let vop,vargs = dest_type vty and cop,cargs = dest_type cty in
      if vop = cop then itlist2 type_match vargs cargs sofar
-     else failwith "type_match";;
+     else failwith ("type_match: " ^ vop ^ " <> " ^ cop);;
 
 (* ------------------------------------------------------------------------- *)
 (* Conventional matching version of mk_const (but with a sanity test).       *)

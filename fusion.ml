@@ -36,6 +36,9 @@ module type Hol_kernel =
       val type_subst : (hol_type * hol_type)list -> hol_type -> hol_type
       val bool_ty : hol_type
       val aty : hol_type
+      val type_to_string : hol_type -> string
+
+      val term_to_string : term -> string
 
       val constants : unit -> (string * hol_type) list
       val get_const_type : string -> hol_type
@@ -195,6 +198,24 @@ module Hol : Hol_kernel = struct
   let bool_ty = Tyapp("bool",[])
 
   let aty = Tyvar "A"
+
+(* ------------------------------------------------------------------------- *)
+(* hol_type to string.                                                       *)
+(* ------------------------------------------------------------------------- *)
+
+  let rec type_to_string ty =
+    match ty with
+      Tyvar s -> s
+      | Tyapp (s, []) -> s
+      | Tyapp (s, l) ->
+        "(" ^ (String.concat "," (map type_to_string l)) ^ ")" ^ s
+
+  let rec term_to_string t =
+    match t with
+      Var (name, ty) -> "Var(" ^ name ^ ", _)"
+      | Const (name, ty) -> "Const(" ^ name ^ ", _)"
+      | Comb  (t0, t1) -> "Comb(" ^ (term_to_string t0) ^ ", " ^ (term_to_string t1) ^ ")"
+      | Abs   (t0, t1) -> "Abs(" ^ (term_to_string t0) ^ ", " ^ (term_to_string t1) ^ ")"
 
 (* ------------------------------------------------------------------------- *)
 (* List of term constants and their types.                                   *)
@@ -364,8 +385,12 @@ module Hol : Hol_kernel = struct
                     else Abs(v,s') in
     fun theta ->
       if theta = [] then (fun tm -> tm) else
-      if forall (function (t,Var(_,y)) -> Pervasives.compare (type_of t) y = 0
-                        | _ -> false) theta
+      if forall (function
+          (t,Var(t2name,y)) ->
+            if Pervasives.compare (type_of t) y = 0 then true
+            else failwith ("vsubst: Type mismatch: " ^ t2name ^ ": " ^
+              (type_to_string (type_of t)) ^ " <> " ^ (type_to_string y))
+          | (t,t2) -> failwith ("vsubst: Bad substitution: " ^ (term_to_string t2))) theta
       then vsubst theta else failwith "vsubst: Bad substitution list"
 
 (* ------------------------------------------------------------------------- *)
