@@ -90,13 +90,20 @@ let ocaml_version = String.sub Sys.ocaml_version 0 4;;
 let version_ge_3_10 = ocaml_version >= "3.10";;
 let version_ge_4_14 = ocaml_version >= "4.14";;
 
-if version_ge_4_14
+if version_ge_4_14 && Sys.backend_type = Sys.Bytecode
 then loads "load_camlp5_topfind.ml"
+else if version_ge_4_14 && Sys.backend_type = Sys.Native
+then loads "load_camlp5_native.ml"
 else if version_ge_3_10
 then loads "load_camlp5.ml"
 else loads "load_camlp4.ml";;
 
-Topdirs.dir_load Format.std_formatter (Filename.concat (!hol_dir) "pa_j.cmo");;
+let pa_j_path = Filename.concat (!hol_dir)
+  (match Sys.backend_type with
+   | Sys.Bytecode -> "pa_j.cmo"
+   | Sys.Native -> "pa_j.cmx"
+   | _ -> failwith "Unknown backend type") in
+  Topdirs.dir_load Format.std_formatter pa_j_path;;
 
 if version_ge_4_14
 then loads "bignum_zarith.ml"

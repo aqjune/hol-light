@@ -8,3 +8,4 @@ pa_j.ml
 update_database.ml
 ocaml-hol
 hol.sh
+hol-native.sh

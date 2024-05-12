@@ -2,7 +2,12 @@
 (* Load in the bignum library.                                               *)
 (* ------------------------------------------------------------------------- *)
 
-Topfind.load_deeply ["zarith"];;
+match Sys.backend_type with
+| Sys.Bytecode ->
+  loads "load_zarith_topfind.ml"
+| Sys.Native ->
+  loads "load_zarith_omod.ml"
+| _ -> failwith "Unknown backend type";;
 
 (* A wrapper of Zarith that has an interface of Num.
    However, this is different from the real Num library because it supports

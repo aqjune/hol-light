@@ -46,6 +46,14 @@ switch:; \
   eval $(opam env) ; \
   opam install -y zarith camlp5 ledit
 
+switch-native:; \
+  opam repo add --set-default ocamlnat git+https://github.com/dbuenzli/opam-repo-ocamlnat.git ; \
+  opam update ; \
+  opam switch create . 4.14.2+ocamlnat ; \
+  opam install -y zarith ledit ; \
+  opam pin add omod --dev -y ; \
+  opam pin add -y camlp5 https://github.com/camlp5/camlp5.git#ocamlnat-patches
+
 # Choose an appropriate "update_database.ml" file
 
 update_database.ml:; if [ ${OCAML_VERSION} = "4.14" ] ; \
@@ -62,6 +70,9 @@ pa_j.cmo: pa_j.ml; if test ${OCAML_BINARY_VERSION} = "3.0" ; \
                    else ocamlc -safe-string -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` -I `ocamlfind query camlp-streams` pa_j.ml ; \
                    fi
 
+pa_j.cmx: pa_j.ml; \
+  ocamlopt -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` -I `ocamlfind query camlp-streams` pa_j.ml 
+
 # Choose an appropriate camlp4 or camlp5 syntax extension.
 #
 # For OCaml < 3.10 (OCAML_BINARY_VERSION = "3.0"), this uses the built-in
@@ -72,9 +83,11 @@ pa_j.cmo: pa_j.ml; if test ${OCAML_BINARY_VERSION} = "3.0" ; \
 # based on the camlp5 version. The main distinction is < 6.00 and >= 6.00, but
 # there are some other incompatibilities, unfortunately.
 
-pa_j.ml: pa_j_3.07.ml pa_j_3.08.ml pa_j_3.09.ml pa_j_3.1x_5.xx.ml pa_j_3.1x_6.xx.ml pa_j_4.xx_8.00.ml pa_j_4.xx_8.02.ml; \
+pa_j.ml: pa_j_3.07.ml pa_j_3.08.ml pa_j_3.09.ml pa_j_3.1x_5.xx.ml pa_j_3.1x_6.xx.ml pa_j_4.xx_8.00.ml pa_j_4.xx_8.02.ml pa_j_4.xx_8.03.ml; \
         if test ${OCAML_BINARY_VERSION} = "3.0"  ; \
         then cp pa_j_${OCAML_VERSION}.ml pa_j.ml ; \
+        elif test $(shell echo ${CAMLP5_VERSION} | head -c4) = "8.03" ; \
+        then cp pa_j_4.xx_8.03.ml pa_j.ml; \
         elif test $(shell echo ${CAMLP5_VERSION} | head -c4) = "8.02" ; \
         then cp pa_j_4.xx_8.02.ml pa_j.ml; \
         elif test ${CAMLP5_BINARY_VERSION} = "8" ; \
@@ -104,6 +117,17 @@ hol.sh: pa_j.cmo ${HOLSRC} update_database.ml ; \
                 chmod +x hol.sh ; \
         else \
                 echo 'FAILURE: hol.sh assumes Linux' ; \
+        fi
+
+hol-native.sh: pa_j.cmx ${HOLSRC} ; \
+        if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
+                if [ ${OCAML_UNARY_VERSION} = "5" ] || [ ${OCAML_VERSION} = "4.14" ] ; \
+                then sed "s^__DIR__^`pwd`^g" hol-native_4.14.sh > hol-native.sh ; \
+                     chmod +x hol.sh ; \
+                else 'FAILURE: hol-native.sh assumes OCaml >= 4.14' ;\
+                fi ; \
+        else \
+                echo 'FAILURE: hol-native.sh assumes Linux' ; \
         fi
 
 # TODO: update this and hol.* commands to use one of checkpointing  tools
