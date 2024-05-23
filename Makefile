@@ -123,7 +123,7 @@ hol-native.sh: pa_j.cmx ${HOLSRC} ; \
         if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
                 if [ ${OCAML_UNARY_VERSION} = "5" ] || [ ${OCAML_VERSION} = "4.14" ] ; \
                 then sed "s^__DIR__^`pwd`^g" hol-native_4.14.sh > hol-native.sh ; \
-                     chmod +x hol.sh ; \
+                     chmod +x hol-native.sh ; \
                 else 'FAILURE: hol-native.sh assumes OCaml >= 4.14' ;\
                 fi ; \
         else \
