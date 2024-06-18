@@ -2,6 +2,8 @@
 (* Load in the bignum library.                                               *)
 (* ------------------------------------------------------------------------- *)
 
+(*Topfind.load_deeply ["zarith"];;*)
+
 (* A wrapper of Zarith that has an interface of Num.
    However, this is different from the real Num library because it supports
    infinity and undef. If exception happens, Failure with the name of the
@@ -156,4 +158,4 @@ module NumExt = struct
 
 end;;
 
-include NumExt;;
+open NumExt;;

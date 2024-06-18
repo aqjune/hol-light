@@ -2,8 +2,6 @@
 (* Load in the bignum library.                                               *)
 (* ------------------------------------------------------------------------- *)
 
-#load "nums.cma";;
-
 include Num;;
 
 let num = Num.num_of_int;;

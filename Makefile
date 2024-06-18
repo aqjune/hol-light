@@ -16,13 +16,14 @@ BINDIR=${HOME}/bin
 
 # This is the list of source files in the HOL Light core
 
-HOLSRC=system.ml lib.ml fusion.ml basics.ml nets.ml preterm.ml          \
-       parser.ml printer.ml equal.ml bool.ml drule.ml tactics.ml        \
-       itab.ml simp.ml theorems.ml ind_defs.ml class.ml trivia.ml       \
-       canon.ml meson.ml metis.ml quot.ml recursion.ml pair.ml          \
-       nums.ml arith.ml wf.ml calc_num.ml normalizer.ml grobner.ml      \
-       ind_types.ml lists.ml realax.ml calc_int.ml realarith.ml         \
-       real.ml calc_rat.ml int.ml sets.ml iterate.ml cart.ml define.ml  \
+HOLSRC=system.ml lib.ml fusion.ml basics.ml nets.ml preterm.ml           \
+       parser.ml printer.ml equal.ml bool.ml drule.ml tactics.ml         \
+       itab.ml simp.ml theorems.ml ind_defs.ml class.ml trivia.ml        \
+       canon.ml meson.ml firstorder.ml metis.ml thecops.ml quot.ml       \
+       impconv.ml pair.ml compute.ml nums.ml recursion.ml arith.ml wf.ml \
+       calc_num.ml normalizer.ml grobner.ml ind_types.ml lists.ml        \
+       realax.ml calc_int.ml realarith.ml real.ml calc_rat.ml int.ml     \
+       sets.ml iterate.ml cart.ml define.ml                              \
        help.ml database.ml update_database.ml
 
 # Some parameters to help decide how to build things
@@ -94,12 +95,31 @@ pa_j.ml: pa_j_3.07.ml pa_j_3.08.ml pa_j_3.09.ml pa_j_3.1x_5.xx.ml pa_j_3.1x_6.xx
         else cp pa_j_3.1x_${CAMLP5_BINARY_VERSION}.xx.ml pa_j.ml; \
         fi
 
+# Choose an appropriate bignum library.
+#
+# For OCaml < 4.14, this uses the Num library.
+# For OCaml >= 4.14, this uses the Zarith library.
+
+bignum.cmo: bignum_num.ml bignum_zarith.ml ; \
+        if test ${OCAML_VERSION} = "4.14" -o ${OCAML_UNARY_VERSION} = "5" ;\
+        then ocamlfind ocamlc -package zarith -c -o bignum.cmo bignum_zarith.ml ; \
+        else ocamlc -c -o bignum.cmo bignum_num.ml nums.cmo ; \
+        fi
+
+hol_lib.cmo: hol_lib.ml ${HOLSRC} inline_load.ml bignum.cmo ; \
+        ocaml inline_load.ml hol_lib.ml hol_lib_inlined.ml ;\
+        ocamlc -verbose -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo" hol_lib_inlined.ml bignum.cmo -o hol_lib.cmo ; \
+
+hol_lib.cma: hol_lib.cmo bignum.cmo ; \
+        ocamlfind ocamlc -package zarith -linkpkg -a -o hol_lib.cma bignum.cmo hol_lib.cmo
+
 # Create a bash script 'hol.sh' that loads 'hol.ml' in OCaml REPL.
 
-hol.sh: pa_j.cmo ${HOLSRC} update_database.ml ; \
+hol.sh: pa_j.cmo ${HOLSRC} update_database.ml bignum.cmo hol_lib.cma ; \
         if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
                 if [ ${OCAML_UNARY_VERSION} = "5" ] || [ ${OCAML_VERSION} = "4.14" ] ; \
-                then ocamlmktop -o ocaml-hol ; sed "s^__DIR__^`pwd`^g" hol_4.14.sh > hol.sh ; \
+                then ocamlfind ocamlmktop -package zarith -o ocaml-hol zarith.cma ; \
+                     sed "s^__DIR__^`pwd`^g" hol_4.14.sh > hol.sh ; \
                 else ocamlmktop -o ocaml-hol nums.cma ; sed "s^__DIR__^`pwd`^g" hol_4.sh > hol.sh ; \
                 fi ; \
                 chmod +x hol.sh ; \
@@ -166,4 +186,4 @@ install: hol.sh hol hol.multivariate hol.sosa hol.card hol.complex; cp hol hol.m
 
 # Clean up all compiled files
 
-clean:; rm -f update_database.ml pa_j.ml pa_j.cmi pa_j.cmo ocaml-hol hol.sh hol hol.multivariate hol.sosa hol.card hol.complex;
+clean:; rm -f update_database.ml pa_j.ml pa_j.cmi pa_j.cmo ocaml-hol hol.sh hol hol_lib.cma hol_lib.cmo hol_lib.cmi hol_lib_inlined.ml hol.multivariate hol.sosa hol.card hol.complex;
