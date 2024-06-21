@@ -56,20 +56,25 @@ loads "hol_lib.ml";;
 
 Topdirs.dir_load Format.std_formatter
     (Filename.concat (!hol_dir) "hol_lib.cma");;
-open Hol_lib;;
+
+include Hol_lib;;
 
 (* ------------------------------------------------------------------------- *)
 (* Install all the printers.                                                 *)
 (* ------------------------------------------------------------------------- *)
 
+(* bignum.ml *)
 #install_printer pp_print_num;;
 
+(* lib.ml *)
 #install_printer pp_print_fpf;;
 
+(* printer.ml *)
 #install_printer pp_print_qtype;;
 #install_printer pp_print_qterm;;
 #install_printer pp_print_thm;;
 
+(* tactics.ml *)
 #install_printer pp_print_goal;;
 #install_printer pp_print_goalstack;;
 

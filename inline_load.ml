@@ -1,7 +1,11 @@
+if Array.length Sys.argv <> 3 then
+  (Printf.printf "ocaml inline_load.ml <input .ml file> <output .ml file>\n"; exit 1);;
+
 let filename = Sys.argv.(1);;
 let fout = open_out (Sys.argv.(2));;
 
 #use "hol_loader.ml";;
+Printf.printf "hol_dir: %s\n" !hol_dir;;
 
 let parse_load_statement fnname stmt: (string * string) option =
   let stmt = String.trim stmt in
@@ -18,7 +22,6 @@ let parse_load_statement fnname stmt: (string * string) option =
   if not (String.starts_with ~prefix:";;" stmt) then None else
   let stmt = String.sub stmt 2 (String.length stmt - 2) in
   Some (path,stmt);;
-
 
 let strings_of_file filename =
   let fd =

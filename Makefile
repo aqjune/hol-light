@@ -36,7 +36,7 @@ CAMLP5_VERSION=`camlp5 -v 2>&1 | cut -f3 -d' ' | cut -f1-3 -d'.' | cut -f1 -d'-'
 
 # Main target
 
-default: update_database.ml pa_j.cmo hol.sh;
+default: update_database.ml pa_j.cmo hol.sh hol_lib.cmxa;
 
 # Create a local OPAM switch and install dependencies on it.
 # This will use the latest OCaml version that fully supports features of
@@ -106,12 +106,26 @@ bignum.cmo: bignum_num.ml bignum_zarith.ml ; \
         else ocamlc -c -o bignum.cmo bignum_num.ml nums.cmo ; \
         fi
 
-hol_lib.cmo: hol_lib.ml ${HOLSRC} inline_load.ml bignum.cmo ; \
-        ocaml inline_load.ml hol_lib.ml hol_lib_inlined.ml ;\
-        ocamlc -verbose -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo" hol_lib_inlined.ml bignum.cmo -o hol_lib.cmo ; \
+bignum.cmx: bignum_num.ml bignum_zarith.ml ; \
+        if test ${OCAML_VERSION} = "4.14" -o ${OCAML_UNARY_VERSION} = "5" ;\
+        then ocamlfind ocamlopt -package zarith -c -o bignum.cmx bignum_zarith.ml ; \
+        else ocamlopt -c -o bignum.cmx bignum_num.ml nums.cmx ; \
+        fi
+
+hol_lib_inlined.ml: inline_load.ml ${HOLSRC} hol_lib.ml ; \
+        ocaml inline_load.ml hol_lib.ml hol_lib_inlined.ml
+
+hol_lib.cmo: hol_lib_inlined.ml bignum.cmo ; \
+        ocamlc -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo" hol_lib_inlined.ml bignum.cmo -o hol_lib.cmo
 
 hol_lib.cma: hol_lib.cmo bignum.cmo ; \
         ocamlfind ocamlc -package zarith -linkpkg -a -o hol_lib.cma bignum.cmo hol_lib.cmo
+
+hol_lib.cmx: hol_lib_inlined.ml bignum.cmx ; \
+        ocamlopt -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo -I . pa_j.cmo" hol_lib_inlined.ml bignum.cmx -o hol_lib.cmx
+
+hol_lib.cmxa: hol_lib.cmx bignum.cmx ; \
+        ocamlfind ocamlopt -package zarith -a -o hol_lib.cmxa bignum.cmx hol_lib.cmx
 
 # Create a bash script 'hol.sh' that loads 'hol.ml' in OCaml REPL.
 

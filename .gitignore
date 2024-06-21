@@ -1,9 +1,11 @@
 .DS_Store
 .vscode
 _opam
+*.a
 *.cma
 *.cmi
 *.cmo
+*.cmxa
 *.o
 *.cmx
 pa_j.ml
