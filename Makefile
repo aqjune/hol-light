@@ -36,7 +36,7 @@ CAMLP5_VERSION=`camlp5 -v 2>&1 | cut -f3 -d' ' | cut -f1-3 -d'.' | cut -f1 -d'-'
 
 # Main target
 
-default: update_database.ml pa_j.cmo hol.sh;
+default: update_database.ml pa_j.cmo bignum.cmo hol.sh;
 
 # Create a local OPAM switch and install dependencies on it.
 # This will use the latest OCaml version that fully supports features of
@@ -55,6 +55,17 @@ update_database.ml:; if [ ${OCAML_VERSION} = "4.14" ] ; \
                      then cp update_database_4.14.ml update_database.ml ; \
                      else cp update_database_${OCAML_UNARY_VERSION}.ml update_database.ml ; \
                      fi
+
+# Choose an appropriate bignum library.
+#
+# For OCaml < 4.14, this uses the Num library.
+# For OCaml >= 4.14, this uses the Zarith library.
+
+bignum.cmo: bignum_num.ml bignum_zarith.ml ; \
+        if test ${OCAML_VERSION} = "4.14" -o ${OCAML_UNARY_VERSION} = "5" ; \
+        then ocamlfind ocamlc -package zarith -c -o bignum.cmo bignum_zarith.ml ; \
+        else ocamlc -c -o bignum.cmo bignum_num.ml nums.cmo ; \
+        fi
 
 # Build the camlp4 syntax extension file (camlp5 for OCaml >= 3.10)
 
@@ -99,10 +110,11 @@ pa_j.ml: pa_j/pa_j_3.07.ml pa_j/pa_j_3.08.ml pa_j/pa_j_3.09.ml \
 
 # Create a bash script 'hol.sh' that loads 'hol.ml' in OCaml REPL.
 
-hol.sh: pa_j.cmo ${HOLSRC} update_database.ml ; \
+hol.sh: pa_j.cmo bignum.cmo ${HOLSRC} update_database.ml ; \
         if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
                 if [ ${OCAML_UNARY_VERSION} = "5" ] || [ ${OCAML_VERSION} = "4.14" ] ; \
-                then ocamlmktop -o ocaml-hol ; sed "s^__DIR__^`pwd`^g" hol_4.14.sh > hol.sh ; \
+                then ocamlfind ocamlmktop -package zarith -o ocaml-hol zarith.cma ; \
+                     sed "s^__DIR__^`pwd`^g" hol_4.14.sh > hol.sh ; \
                 else ocamlmktop -o ocaml-hol nums.cma ; sed "s^__DIR__^`pwd`^g" hol_4.sh > hol.sh ; \
                 fi ; \
                 chmod +x hol.sh ; \
