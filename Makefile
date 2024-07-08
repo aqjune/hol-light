@@ -42,12 +42,23 @@ default: update_database.ml pa_j.cmo bignum.cmo hol.sh;
 # This will use the latest OCaml version that fully supports features of
 # HOL Light.
 # ledit is installed for line editing of OCaml REPL
+
 switch:; \
 	opam update ; \
   opam switch create . ocaml-base-compiler.4.14.0 ; \
   eval $(opam env) ; \
   opam install -y zarith ledit ; \
   opam pin -y add camlp5 8.03.00
+
+# Create a local OPAM switch for running HOL Light on native OCaml REPL.
+
+switch-native:; \
+  opam repo add --set-default ocamlnat git+https://github.com/dbuenzli/opam-repo-ocamlnat.git ; \
+  opam update ; \
+  opam switch create . 4.14.2+ocamlnat ; \
+  opam install -y zarith ledit ; \
+  opam pin add omod --dev -y ; \
+  opam pin add -y camlp5 https://github.com/camlp5/camlp5.git#ocamlnat-patches
 
 # Choose an appropriate "update_database.ml" file
 
@@ -67,6 +78,12 @@ bignum.cmo: bignum_num.ml bignum_zarith.ml ; \
         else ocamlc -c -o bignum.cmo bignum_num.ml nums.cmo ; \
         fi
 
+bignum.cmx: bignum_num.ml bignum_zarith.ml ; \
+        if test ${OCAML_VERSION} = "4.14" -o ${OCAML_UNARY_VERSION} = "5" ; \
+        then ocamlfind ocamlopt -package zarith -c -o bignum.cmx bignum_zarith.ml ; \
+        else 'FAILURE: bignum.cmx assumes OCaml >= 4.14' ;\
+        fi
+
 # Build the camlp4 syntax extension file (camlp5 for OCaml >= 3.10)
 
 pa_j.cmo: pa_j.ml; if test ${OCAML_BINARY_VERSION} = "3.0" ; \
@@ -75,6 +92,9 @@ pa_j.cmo: pa_j.ml; if test ${OCAML_BINARY_VERSION} = "3.0" ; \
                    then ocamlc -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` pa_j.ml ; \
                    else ocamlc -safe-string -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` -I `ocamlfind query camlp-streams` pa_j.ml ; \
                    fi
+
+pa_j.cmx: pa_j.ml; \
+  ocamlopt -c -pp "camlp5r pa_lexer.cmo pa_extend.cmo q_MLast.cmo" -I `camlp5 -where` -I `ocamlfind query camlp-streams` pa_j.ml
 
 # Choose an appropriate camlp4 or camlp5 syntax extension.
 #
@@ -121,6 +141,17 @@ hol.sh: pa_j.cmo bignum.cmo ${HOLSRC} update_database.ml ; \
                 chmod +x hol.sh ; \
         else \
                 echo 'FAILURE: hol.sh assumes Linux' ; \
+        fi
+
+hol-native.sh: pa_j.cmx bignum.cmx ${HOLSRC} ; \
+        if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
+                if [ ${OCAML_UNARY_VERSION} = "5" ] || [ ${OCAML_VERSION} = "4.14" ] ; \
+                then sed "s^__DIR__^`pwd`^g" hol-native_4.14.sh > hol-native.sh ; \
+                     chmod +x hol-native.sh ; \
+                else 'FAILURE: hol-native.sh assumes OCaml >= 4.14' ;\
+                fi ; \
+        else \
+                echo 'FAILURE: hol-native.sh assumes Linux' ; \
         fi
 
 # TODO: update this and hol.* commands to use one of checkpointing  tools
