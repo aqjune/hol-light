@@ -98,9 +98,6 @@ else loads "load_camlp4.ml";;
 
 Topdirs.dir_load Format.std_formatter (Filename.concat (!hol_dir) "pa_j.cmo");;
 
-include Bignum
-#install_printer pp_print_num;;
-
 (* ------------------------------------------------------------------------- *)
 (* Bind these to names that are independent of OCaml versions before they    *)
 (* are potentially overwritten by an identifier of the same name. In older   *)
@@ -112,6 +109,13 @@ include Bignum
 
 let float_sqrt = sqrt;;
 let float_fabs = abs_float;;
+
+(* ------------------------------------------------------------------------- *)
+(* Load a big-number library which is a wrapper of either zarith or num.     *)
+(* ------------------------------------------------------------------------- *)
+
+include Bignum
+#install_printer pp_print_num;;
 
 (* ------------------------------------------------------------------------- *)
 (* Various tweaks to OCaml and general library functions.                    *)
