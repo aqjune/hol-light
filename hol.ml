@@ -98,8 +98,6 @@ else loads "load_camlp4.ml";;
 
 Topdirs.dir_load Format.std_formatter (Filename.concat (!hol_dir) "pa_j.cmo");;
 
-Topdirs.dir_load Format.std_formatter
-  (Filename.concat (!hol_dir) "bignum.cmo");;
 include Bignum
 #install_printer pp_print_num;;
 

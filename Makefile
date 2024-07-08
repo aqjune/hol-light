@@ -113,9 +113,10 @@ pa_j.ml: pa_j/pa_j_3.07.ml pa_j/pa_j_3.08.ml pa_j/pa_j_3.09.ml \
 hol.sh: pa_j.cmo bignum.cmo ${HOLSRC} update_database.ml ; \
         if [ `uname` = "Linux" ] || [ `uname` = "Darwin" ] ; then \
                 if [ ${OCAML_UNARY_VERSION} = "5" ] || [ ${OCAML_VERSION} = "4.14" ] ; \
-                then ocamlfind ocamlmktop -package zarith -o ocaml-hol zarith.cma ; \
+                then ocamlfind ocamlmktop -package zarith -o ocaml-hol zarith.cma bignum.cmo ; \
                      sed "s^__DIR__^`pwd`^g" hol_4.14.sh > hol.sh ; \
-                else ocamlmktop -o ocaml-hol nums.cma ; sed "s^__DIR__^`pwd`^g" hol_4.sh > hol.sh ; \
+                else ocamlmktop -o ocaml-hol nums.cma bignum.cmo ; \
+                     sed "s^__DIR__^`pwd`^g" hol_4.sh > hol.sh ; \
                 fi ; \
                 chmod +x hol.sh ; \
         else \
