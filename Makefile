@@ -200,4 +200,4 @@ install: hol.sh hol hol.multivariate hol.sosa hol.card hol.complex; cp hol hol.m
 
 # Clean up all compiled files
 
-clean:; rm -f update_database.ml pa_j.ml pa_j.cmi pa_j.cmo ocaml-hol hol.sh hol hol_lib.cma hol_lib.cmxa hol_lib.cmo hol_lib.cmi hol_lib_inlined.ml hol.multivariate hol.sosa hol.card hol.complex;
+clean:; rm -f update_database.ml pa_j.ml pa_j.cmi pa_j.cmo ocaml-hol hol.sh hol hol_lib.cma hol_lib.cmx hol_lib.cmxa hol_lib.cmo hol_lib.cmi hol_lib_inlined.ml hol.multivariate hol.sosa hol.card hol.complex;
