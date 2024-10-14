@@ -54,8 +54,10 @@ install: [
   ["cp" "hol.sh" "%{bin}%/hol.sh"]
   ["cp" "inline_load.ml" "%{bin}%/inline_load.ml"] {hol-light-module:installed}
   ["mkdir" "-p" "%{hol-light:lib}%"] {hol-light-module:installed}
-  ["cp" "hol_lib.c*" "hol_lib.o" "hol_lib.a" "bignum.*"
-        "hol_loader.c*" "hol_loader.o" "%{hol-light:lib}%"] {hol-light-module:installed}
+  ["cp" "hol_lib.cma" "hol_lib.cmi" "hol_lib.cmo" "hol_lib.cmx" "hol_lib.cmxa" "hol_lib.o" "hol_lib.a"
+        "bignum.cmi" "bignum.cmo" "bignum.cmx" "bignum.o"
+        "hol_loader.cmi" "hol_loader.cmo" "hol_loader.cmx" "hol_loader.o"
+        "%{hol-light:lib}%"] {hol-light-module:installed}
 ]
 remove: [
   ["rm" "%{bin}%/hol.sh"]
