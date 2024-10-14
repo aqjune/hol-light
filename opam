@@ -53,7 +53,7 @@ build: [
 install: [
   ["cp" "hol.sh" "%{bin}%/hol.sh"]
   ["cp" "inline_load.ml" "%{bin}%/inline_load.ml"] {hol-light-module:installed}
-  ["pwd"] {hol-light-module:installed}
+  ["mkdir" "-p" "%{hol-light:lib}%"] {hol-light-module:installed}
   ["cp" "hol_lib.c*" "hol_lib.o" "hol_lib.a" "bignum.*"
         "hol_loader.c*" "hol_loader.o" "%{hol-light:lib}%"] {hol-light-module:installed}
 ]
