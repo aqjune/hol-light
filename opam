@@ -1,5 +1,5 @@
 opam-version: "2.0"
-name: "hol-light"
+name: "hol_light"
 version: "3.0.0"
 synopsis: "The HOL-Light interactive theorem prover"
 description: """
@@ -20,7 +20,7 @@ industrial-scale verification applications.
 This package will install `hol.sh` which will run OCaml REPL with HOL Light
 loaded.
 To use a compiled module of HOL Light, please install with the
-hol-light-module OPAM package.
+hol_light_module OPAM package.
 """
 authors: "HOL Light"
 license: "https://github.com/jrh13/hol-light/blob/master/LICENSE"
@@ -28,7 +28,7 @@ homepage: "https://hol-light.github.io/"
 bug-reports: "https://github.com/jrh13/hol-light/issues"
 dev-repo: "git+https://github.com/jrh13/hol-light.git"
 maintainer: ["John Harrison <jrh013@gmail.com>" "Juneyoung Lee <aqjune@gmail.com>"]
-depopts: [ "hol-light-module" ]
+depopts: [ "hol_light_module" ]
 depends: [
   ("ocaml" {> "4.02.0" & < "4.05.0"} &
    "camlp5" {>= "6.15" & <= "7.1"})
@@ -47,20 +47,29 @@ depends: [
    "ledit")
 ]
 build: [
-  [make] {!hol-light-module:installed}
-  [make "HOLLIGHT_USE_MODULE=1"] {hol-light-module:installed}
+  [make] {!hol_light_module:installed}
+  [make "HOLLIGHT_USE_MODULE=1"] {hol_light_module:installed}
 ]
 install: [
   ["cp" "hol.sh" "%{bin}%/hol.sh"]
-  ["cp" "inline_load.ml" "%{bin}%/inline_load.ml"] {hol-light-module:installed}
-  ["mkdir" "-p" "%{hol-light:lib}%"] {hol-light-module:installed}
+  
+  ["cp" "inline_load.ml" "%{bin}%/inline_load.ml"] {hol_light_module:installed}
+  
+  ["mkdir" "-p" "%{hol_light:lib}%"] {hol_light_module:installed}
   ["cp" "hol_lib.cma" "hol_lib.cmi" "hol_lib.cmo" "hol_lib.cmx" "hol_lib.cmxa" "hol_lib.o" "hol_lib.a"
         "bignum.cmi" "bignum.cmo" "bignum.cmx" "bignum.o"
-        "hol_loader.cmi" "hol_loader.cmo" "hol_loader.cmx" "hol_loader.o"
-        "%{hol-light:lib}%"] {hol-light-module:installed}
+        "hol_loader.cmi" "hol_loader.cmo" "hol_loader.cmx" "hol_loader.o" "META"
+        "%{hol_light:lib}%"] {hol_light-module:installed}
 ]
 remove: [
   ["rm" "%{bin}%/hol.sh"]
   ["rm" "%{bin}%/inline_load.ml"]
-  ["rm" "-rf" "%{hol-light:lib}%"]
+  ["rm" "-rf" "%{hol_light:lib}%"]
 ]
+extra-source "META" {
+  src: "https://gist.githubusercontent.com/aqjune/4b77edcc29faeebf15fcd4949f27d7ae/raw/3ff64fa63304e1944e4fc6fef8c7a7a5a2009bc2/META"
+  checksum: [
+    "sha256=60ba1ecd6c1b4c7ef96a1547111279cd7c27abefd2a09ae18e3bf0a8fa82698c"
+    "md5=0766bfdee09f7a31b4a36f3038b83fa0"
+  ]
+}
