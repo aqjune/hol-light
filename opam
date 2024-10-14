@@ -60,5 +60,5 @@ install: [
 remove: [
   ["rm" "%{bin}%/hol.sh"]
   ["rm" "%{bin}%/inline_load.ml"]
-  ["rm" "-rf" "%{hol-light:lib}"]
+  ["rm" "-rf" "%{hol-light:lib}%"]
 ]
