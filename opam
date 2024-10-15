@@ -59,12 +59,12 @@ install: [
   ["cp" "hol_lib.cma" "hol_lib.cmi" "hol_lib.cmo" "hol_lib.cmx" "hol_lib.cmxa" "hol_lib.o" "hol_lib.a"
         "bignum.cmi" "bignum.cmo" "bignum.cmx" "bignum.o"
         "hol_loader.cmi" "hol_loader.cmo" "hol_loader.cmx" "hol_loader.o" "META"
-        "%{hol_light:lib}%"] {hol_light-module:installed}
+        "%{hol_light:lib}%"] {hol_light_module:installed}
 ]
 remove: [
   ["rm" "%{bin}%/hol.sh"]
-  ["rm" "%{bin}%/inline_load.ml"]
-  ["rm" "-rf" "%{hol_light:lib}%"]
+  ["rm" "%{bin}%/inline_load.ml"] {hol_light_module:installed}
+  ["rm" "-rf" "%{hol_light:lib}%"] {hol_light_module:installed}
 ]
 extra-source "META" {
   src: "https://gist.githubusercontent.com/aqjune/4b77edcc29faeebf15fcd4949f27d7ae/raw/3ff64fa63304e1944e4fc6fef8c7a7a5a2009bc2/META"
