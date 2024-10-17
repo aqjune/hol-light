@@ -56,6 +56,7 @@ depends: [
    "zarith" {>= "1.5"} &
    "ledit")
 ]
+available: os = "linux" | os = "macos" | os = "cygwin"
 build: [
   [make] {!hol_light_module:installed}
   [make "HOLLIGHT_USE_MODULE=1"] {hol_light_module:installed}
